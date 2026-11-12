@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b2bb0">
+<title>Foxino Olympics · Fugio</title>
+<meta name="description" content="Foxino Olympics: four English learning sports games. 100 m Sprint, Streetball, Sky Dive and Penalty Star. Answer right, answer fast, win the medals.">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common/ui.css?v=1">
+<style>
+  html, body { overflow: auto; height: auto; min-height: 100%; touch-action: auto; }
+  body {
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(255, 138, 74, .55), rgba(255, 138, 74, 0) 60%),
+      radial-gradient(circle at 15% 10%, rgba(255, 205, 28, .25), rgba(255, 205, 28, 0) 30%),
+      linear-gradient(180deg, #1a0b45 0%, #3b1a8a 45%, #5b2bb0 75%, #8f52d9 100%);
+    background-attachment: fixed; color: #fff; user-select: none;
+  }
+  .stars { position: fixed; inset: 0; pointer-events: none; background-image: radial-gradient(1.5px 1.5px at 10% 20%, #fff, transparent), radial-gradient(1px 1px at 30% 8%, #fff, transparent), radial-gradient(1.5px 1.5px at 72% 14%, #fff, transparent), radial-gradient(1px 1px at 88% 30%, #fff, transparent), radial-gradient(1px 1px at 55% 25%, #fff, transparent), radial-gradient(1.5px 1.5px at 42% 4%, #fff, transparent); opacity: .7; }
+  main { position: relative; max-width: 1180px; margin: 0 auto; padding: calc(64px + var(--safe-t)) calc(16px + var(--safe-r)) calc(28px + var(--safe-b)) calc(16px + var(--safe-l)); }
+  header { text-align: center; margin-bottom: clamp(14px, 3vh, 30px); }
+  .torch { font-size: clamp(40px, 7vh, 64px); line-height: 1; filter: drop-shadow(0 0 18px rgba(255, 160, 60, .8)); animation: flick 1.6s ease-in-out infinite; }
+  @keyframes flick { 50% { transform: scale(1.06) rotate(-2deg); filter: drop-shadow(0 0 26px rgba(255, 180, 80, 1)); } }
+  .title .t1 { font-size: clamp(26px, min(5vw, 7vh), 52px); }
+  .title .t2 { font-size: clamp(46px, min(10vw, 13vh), 104px); }
+  .lead { margin: 10px auto 0; max-width: 640px; font-weight: 800; font-size: clamp(15px, 1vw + 10px, 19px); opacity: .95; }
+  .rings { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
+  .rings i { width: 16px; height: 16px; border-radius: 50%; }
+  .events { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 20px); }
+  .ev {
+    position: relative; display: flex; flex-direction: column; text-align: left; color: var(--ink); background: #fff; border-radius: 22px; overflow: hidden; text-decoration: none;
+    box-shadow: 0 6px 0 rgba(20, 8, 60, .45), 0 14px 30px rgba(10, 5, 40, .4); transition: transform .15s, box-shadow .15s; animation: evIn .5s cubic-bezier(.2, 1.4, .4, 1) both; animation-delay: calc(var(--k) * .07s);
+  }
+  @keyframes evIn { from { transform: translateY(24px) scale(.94); opacity: 0; } }
+  .ev:hover { transform: translateY(-4px); box-shadow: 0 10px 0 rgba(20, 8, 60, .45), 0 20px 36px rgba(10, 5, 40, .45); }
+  .ev:active { transform: translateY(2px); }
+  .ev .art { position: relative; aspect-ratio: 2 / 3; background: #2c1a6a center / cover no-repeat; }
+  .ev .art .tag { position: absolute; left: 10px; top: 10px; font-family: 'Lilita One', sans-serif; font-size: 13px; letter-spacing: 1px; color: var(--purple); background: var(--gold); border-radius: 10px; padding: 3px 8px; box-shadow: 0 2px 0 #b88a00; }
+  .ev .art .icon { position: absolute; right: 10px; top: 8px; font-size: 30px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
+  .ev .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .ev h2 { margin: 0; font-family: 'Lilita One', sans-serif; font-weight: normal; font-size: clamp(19px, 1.4vw + 9px, 26px); color: var(--purple); line-height: 1.05; }
+  .ev p { margin: 0; font-weight: 700; font-size: 14px; color: #6e6496; line-height: 1.25; }
+  .ev .prog { margin-top: auto; padding-top: 6px; font-weight: 900; font-size: 13.5px; color: var(--orange); min-height: 1.4em; }
+  .ev .play { position: absolute; right: 12px; bottom: 12px; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(180deg, #ff9a3a, #ff6a1a); box-shadow: 0 3px 0 #c94a0c; display: grid; place-items: center; color: #fff; }
+  .ev .body { padding-right: 58px; }
+  .medals { margin: clamp(16px, 3vh, 30px) auto 0; max-width: 760px; background: rgba(255, 255, 255, .12); border: 2px solid rgba(255, 255, 255, .25); border-radius: 20px; padding: 12px 16px; text-align: center; font-weight: 800; }
+  .medals b { font-family: 'Lilita One', sans-serif; font-weight: normal; font-size: 20px; color: var(--gold); letter-spacing: 1px; display: block; }
+  .medals .row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 6px; font-size: 16px; }
+  @media (max-width: 900px) { .events { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* wide screens (a classroom board): everything on one screen, the posters cropped to their top part */
+  @media (min-aspect-ratio: 5/4) and (min-width: 901px) {
+    main { padding-top: calc(14px + var(--safe-t)); }
+    header { margin-bottom: 2vh; }
+    .torch { font-size: 5vh; }
+    .title .t1 { font-size: 5vh; } .title .t2 { font-size: 10.5vh; }
+    .lead { margin-top: 6px; }
+    .ev .art { aspect-ratio: auto; height: 40vh; background-position: center 18%; }
+    .medals { margin-top: 2vh; }
+  }
+  @media (max-width: 380px) { .ev p { font-size: 13px; } }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<button id="leaveBtn" class="topbtn" type="button" aria-label="Back to Fugio">
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>FUGIO</span>
+</button>
+<button id="profileBtn" class="topbtn" type="button" style="right: calc(10px + var(--safe-r))"></button>
+<main>
+  <header>
+    <div class="torch" aria-hidden="true">🔥</div>
+    <h1 class="title"><span class="t1">FOXINO</span><span class="t2">OLYMPICS</span></h1>
+    <p class="lead">Four sports, one English champion. Answer right to play well — answer <b style="color:var(--gold)">fast</b> to win the medals!</p>
+    <div class="rings" aria-hidden="true"><i style="background:#ffcd1c"></i><i style="background:#8f52d9;box-shadow:0 0 0 2px #fff"></i><i style="background:#ff7d22"></i><i style="background:#3cc6ef"></i></div>
+  </header>
+  <section class="events" id="events" aria-label="The events"></section>
+  <div class="medals" id="medals"></div>
+</main>
+<script type="module">
+  import { Players, mountProfile } from './common/players.js';
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const EVENTS = [
+    { id: 'sprint', title: '100 m Sprint', icon: '🏃', tag: 'NEW', href: '/sprint/', art: '/img/library/sprint-thumb.webp?v=1', text: 'Answer fast to run fast. Win at school, in the city, in the national stadium — then the Final.' },
+    { id: 'streetball', title: 'Streetball', icon: '🏀', tag: 'NEW', href: '/streetball/', art: '/img/library/streetball-thumb.webp?v=1', text: '1 on 1 basketball. Right answers dribble, shoot and block. First to 3 baskets wins.' },
+    { id: 'sky', title: 'Sky Dive', icon: '🪂', href: '/sky/', art: '/img/library/sky-thumb.webp?v=1', text: 'Jump from the plane and fly through the ring with the right word.' },
+    { id: 'penalty', title: 'Penalty Star', icon: '⚽', href: '/penalty/', art: '/img/library/penalty-thumb.webp?v=1', text: 'Ten penalties. Tap the bubble with the right word to beat Rob the keeper.' },
+  ];
+  const PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>';
+  const MED = ['🥇', '🥈', '🥉'];
+  function progress(id) {
+    const d = (Players.data(id === 'streetball' ? 'ball' : id));
+    if (id === 'sprint') {
+      const best = d.best || {}, n = Object.keys(best).length;
+      if (!n) return 'Start at the School Track';
+      const places = ['school', 'city', 'national', 'final'].map((k) => best[k] ? (MED[best[k].place - 1] || '·') : '🔒').join(' ');
+      return d.champion ? `🏆 Champion · ${places}` : places;
+    }
+    if (id === 'streetball') return d.games ? `${d.wins || 0} wins · ${d.losses || 0} losses` : 'First to 3 baskets';
+    try {
+      if (id === 'penalty') { const b = JSON.parse(localStorage.getItem('penalty-best') || '{}'); const v = Object.values(b); if (v.length) return `Best: ${Math.max(...v.map((x) => x.goals || 0))} / 10 goals`; }
+    } catch (e) {}
+    return '';
+  }
+  function medalsLine() {
+    const s = Players.data('sprint'), b = Players.data('ball');
+    const best = s.best || {};
+    let g = 0, si = 0, br = 0;
+    for (const k in best) { const p = best[k].place; if (p === 1) g++; else if (p === 2) si++; else if (p === 3) br++; }
+    if (b.wins) g += 0;
+    const p = Players.current();
+    return `<b>${esc(p.name)}'s medals</b><div class="row"><span>🥇 ${g}</span><span>🥈 ${si}</span><span>🥉 ${br}</span><span>🏀 ${b.wins || 0} streetball wins</span></div>`;
+  }
+  function render() {
+    document.getElementById('events').innerHTML = EVENTS.map((e, k) => `<a class="ev" href="${e.href}" data-id="${e.id}" style="--k:${k}">
+      <div class="art" style="background-image:url('${e.art}')">${e.tag ? `<span class="tag">${e.tag}</span>` : ''}<span class="icon">${e.icon}</span></div>
+      <div class="body"><h2>${esc(e.title)}</h2><p>${esc(e.text)}</p><div class="prog">${esc(progress(e.id))}</div></div><span class="play">${PLAY}</span></a>`).join('');
+    document.getElementById('medals').innerHTML = medalsLine();
+  }
+  render();
+  mountProfile(document.getElementById('profileBtn'), render);
+  addEventListener('pageshow', render);
+  document.getElementById('events').addEventListener('click', (e) => { const a = e.target.closest('.ev'); if (a) { try { sessionStorage.setItem('olympics-hub', '1'); } catch (er) {} } });
+  document.getElementById('leaveBtn').addEventListener('click', () => {
+    if (window.parent !== window) window.parent.postMessage({ fugio: 'leave' }, '*'); else location.href = '/';
+  });
+</script>
+</body>
+</html>
