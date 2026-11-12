@@ -8,8 +8,7 @@
 //            Then attack again.
 import * as THREE from '../olympics/common/lib/three.module.min.js';
 import { RoomEnvironment } from '../olympics/common/lib/RoomEnvironment.js';
-import { POSES, FURS } from '../olympics/common/foxino.js';
-import { loadFoxino3D, makeFoxino3D, setFurLayers, furLayers } from '../olympics/common/foxino3d.js';
+import { POSES, FURS, makeFoxino } from '../olympics/common/foxino.js';
 import { makeBlob, makeConfetti, makeSparks } from '../olympics/common/props.js';
 import { sfx, unlock, crowd as crowdSound, setMuted, isMuted } from '../olympics/common/sound.js';
 import { clamp, lerp, smooth, easeOut, easeInOut, damp } from '../olympics/common/mat.js';
@@ -71,10 +70,9 @@ function actor(fox, name) {
   const blob = makeBlob(0.95); scene.add(blob);
   return { fox, name, blob, pos: new V3(), yaw: 0, yawT: 0, faceMove: false, tw: null, mode: 'stand', mt: 0, mdur: 1, side: -1, stride: 0, moving: 0 };
 }
-// the rigged 3D Foxino model (Blaze = the same fox recoloured)
-await loadFoxino3D('/olympics/common/models/foxino.glb?v=1');
-const me = actor(makeFoxino3D({ kit: foxKit, studs: false }), 'me');
-const him = actor(makeFoxino3D({ colors: FURS.blaze, fur: 'blaze', kit: blazeKit, studs: false }), 'him');
+// the code-built Foxino (Blaze = the same fox recoloured)
+const me = actor(makeFoxino({ kit: foxKit, studs: false }), 'me');
+const him = actor(makeFoxino({ colors: FURS.blaze, kit: blazeKit, studs: false }), 'him');
 const ballBlob = makeBlob(0.36, 0.5); scene.add(ballBlob);
 
 // ---------- state ----------
@@ -674,8 +672,6 @@ function frame(now) {
   if (rdt > 0 && !S.paused) { frames++; if (rdt > 1 / 38) slowFrames++; }
   if (frames >= 90) {
     if (slowFrames > 45 && pr > 1) { pr = Math.max(1, pr - 0.25); resize(); }
-    // still slow at the lowest resolution and not hidden: fewer fur layers (4 → 2 → none)
-    else if (slowFrames > 55 && !document.hidden && furLayers() > 0) setFurLayers(furLayers() > 2 ? 2 : 0);
     frames = 0; slowFrames = 0;
   }
 }
