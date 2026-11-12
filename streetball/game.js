@@ -9,7 +9,7 @@
 import * as THREE from '../olympics/common/lib/three.module.min.js';
 import { RoomEnvironment } from '../olympics/common/lib/RoomEnvironment.js';
 import { POSES, FURS } from '../olympics/common/foxino.js';
-import { loadFoxino3D, makeFoxino3D } from '../olympics/common/foxino3d.js';
+import { loadFoxino3D, makeFoxino3D, setFurLayers, furLayers } from '../olympics/common/foxino3d.js';
 import { makeBlob, makeConfetti, makeSparks } from '../olympics/common/props.js';
 import { sfx, unlock, crowd as crowdSound, setMuted, isMuted } from '../olympics/common/sound.js';
 import { clamp, lerp, smooth, easeOut, easeInOut, damp } from '../olympics/common/mat.js';
@@ -59,6 +59,7 @@ const back = new THREE.DirectionalLight(0xb8d4ff, 0.9); back.position.set(8, 8, 
 
 const court = makeCourt(scene);
 const ball = makeBasketball(); scene.add(ball);
+const _look = new THREE.Vector3();
 const confetti = makeConfetti(); scene.add(confetti.mesh);
 const sparks = makeSparks(); scene.add(sparks.points);
 
@@ -190,6 +191,14 @@ function updateActor(a, dt) {
     default: P = POSES.stand(t);
   }
   a.fox.apply(P, a.mode === 'shoot' || a.mode === 'block' || a.mode === 'crossover' ? 26 : 14, dt);
+  // the eyes: in play both watch the ball (now and then each other); on the menu and end screens, the camera
+  if (a.fox.lookAt) {
+    const other = a === me ? him : me;
+    a.glance = (a.glance || 0) - dt;
+    if (a.glance < -3) a.glance = 0.8 + Math.random();
+    if (S.phase === 'play') a.fox.lookAt(a.glance > 0 ? _look.copy(other.pos).setY(1.25) : ball.position);
+    else a.fox.lookAt(camera.position);
+  }
   a.fox.update(dt, t);
   a.fox.root.position.copy(a.pos);
   a.fox.root.rotation.y = a.yaw;
@@ -665,6 +674,8 @@ function frame(now) {
   if (rdt > 0 && !S.paused) { frames++; if (rdt > 1 / 38) slowFrames++; }
   if (frames >= 90) {
     if (slowFrames > 45 && pr > 1) { pr = Math.max(1, pr - 0.25); resize(); }
+    // still slow at the lowest resolution and not hidden: fewer fur layers (4 → 2 → none)
+    else if (slowFrames > 55 && !document.hidden && furLayers() > 0) setFurLayers(furLayers() > 2 ? 2 : 0);
     frames = 0; slowFrames = 0;
   }
 }
