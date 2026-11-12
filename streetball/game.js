@@ -8,7 +8,8 @@
 //            Then attack again.
 import * as THREE from '../olympics/common/lib/three.module.min.js';
 import { RoomEnvironment } from '../olympics/common/lib/RoomEnvironment.js';
-import { makeFoxino, POSES, FURS } from '../olympics/common/foxino.js';
+import { POSES, FURS } from '../olympics/common/foxino.js';
+import { loadFoxino3D, makeFoxino3D } from '../olympics/common/foxino3d.js';
 import { makeBlob, makeConfetti, makeSparks } from '../olympics/common/props.js';
 import { sfx, unlock, crowd as crowdSound, setMuted, isMuted } from '../olympics/common/sound.js';
 import { clamp, lerp, smooth, easeOut, easeInOut, damp } from '../olympics/common/mat.js';
@@ -69,8 +70,10 @@ function actor(fox, name) {
   const blob = makeBlob(0.95); scene.add(blob);
   return { fox, name, blob, pos: new V3(), yaw: 0, yawT: 0, faceMove: false, tw: null, mode: 'stand', mt: 0, mdur: 1, side: -1, stride: 0, moving: 0 };
 }
-const me = actor(makeFoxino({ kit: foxKit, studs: false }), 'me');
-const him = actor(makeFoxino({ colors: FURS.blaze, kit: blazeKit, studs: false }), 'him');
+// the rigged 3D Foxino model (Blaze = the same fox recoloured)
+await loadFoxino3D('/olympics/common/models/foxino.glb?v=1');
+const me = actor(makeFoxino3D({ kit: foxKit, studs: false }), 'me');
+const him = actor(makeFoxino3D({ colors: FURS.blaze, fur: 'blaze', kit: blazeKit, studs: false }), 'him');
 const ballBlob = makeBlob(0.36, 0.5); scene.add(ballBlob);
 
 // ---------- state ----------
@@ -86,7 +89,7 @@ const realWait = (ms) => new Promise((r) => setTimeout(r, ms / Math.max(0.05, S.
 // ---------- the ball ----------
 const B = { mode: 'held', owner: me, ph: 0, lastCos: 1, fly: null, v: new V3(), held: 'dribble' };
 const _v = new V3(), _v2 = new V3(), _v3 = new V3(), _h1 = new V3(), _h2 = new V3();
-function hand(a, side, out) { return a.fox.J[side < 0 ? 'elbowR' : 'elbowL'].localToWorld(out.set(0, -0.16, 0.02)); }
+function hand(a, side, out) { return a.fox.hand ? a.fox.hand(side, out) : a.fox.J[side < 0 ? 'elbowR' : 'elbowL'].localToWorld(out.set(0, -0.16, 0.02)); }
 function give(a, how = 'dribble') { B.mode = 'held'; B.owner = a; B.held = how; B.fly = null; }
 // a flight from p0 to p1 over dur (seconds of game time) with an arc `h` metres above the straight line
 function flyTo(p1, dur, h, then = null, extra = {}) {
@@ -570,6 +573,8 @@ function rigPlay(out) {
   camSide = damp(camSide, want, 2.5, 1 / 60);
   out.pos.set(cx + camSide * (a < 0.8 ? 1.3 : lerp(2.0, 2.6, flat)), a < 0.8 ? 4.4 : lerp(3.5, 2.0, flat), zMax + (a < 0.8 ? 6.8 : lerp(5.6, 4.6, flat)));
   out.look.set(cx * 0.6, lerp(1.2, 1.45, flat), 2.2);
+  // attacking, the camera is behind Foxino: look over (and past) his big tail
+  if (S.poss === 'att') { out.pos.y += lerp(1.1, 0.7, flat); out.pos.x += camSide * lerp(0.8, 0.5, flat); }
   let i = 0;
   PTS[i++].set(RIM.x - 0.4, RIM.y, RIM.z); PTS[i++].set(RIM.x + 0.4, RIM.y, RIM.z); PTS[i++].set(0, flat > 0.5 ? 2.4 : 3.12, 0.6);
   for (const p of [me, him]) {
